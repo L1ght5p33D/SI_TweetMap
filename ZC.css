@@ -1,0 +1,201 @@
+
+  
+  html{
+    height: 100%;
+    width: 100%
+     background-color: #666666;
+     margin:0;
+     padding: 0;
+  
+  }
+  body{
+    font-family: sans-serif;
+    height: 100%
+    width:100%;
+    margin:0;
+     padding: 0;
+     background-color: black;
+  }
+
+.winfo{
+  font-size: 150%;
+}
+
+
+#map {  
+        height: 100%;
+        width: 100%;
+         border:solid black 7px;
+     }
+
+  #mapWrap{
+    background-color: black;
+     padding-left: 0px;
+         padding-right: 0px;        
+         width: 100%;
+         height: 550px;
+         text-align: left;
+         align-content: left;
+         float: left;
+         margin-top: 40px;
+  }
+
+   #mapSide{
+  background-color: #666666;
+  height: 700px;
+  width: 101%;
+  margin-top: 0px;
+  padding-top: 0px;
+
+}  
+
+  .container-fluid{
+    text-align: center;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: black;
+     }
+
+h2{
+  padding: 2px;
+  margin:5px;
+ 
+}
+ 
+h1{
+  margin: 20px;
+  padding: 20px;
+}
+  #mapInst{
+    font-family: 'Montserrat', sans-serif;
+    background-color: #428BC0;
+     color: white;
+     border:9px solid #428BC0;
+     border-radius: 0%;
+     padding: 3px 0px 0px 0px;
+     margin:0px 10px 0px 10px;
+     font-size: 150%;
+    }
+
+  #topBar{
+    background-color: #666666;
+    height: 110px;
+    padding: 10px;
+  }
+
+  #segrip{
+        background-image: url('../Imgz/move-or-resize.png') ;
+        background-image: cover;
+        height: 30px;
+        width: 30px;
+        background-size: 100% 100%;
+        cursor:move;
+        }
+
+        #header{
+    width: 100%;
+    margin:0;
+    padding: 0;
+    border:none;
+    background-color: black;
+  }
+   
+#footer{
+  background-color: #666666;
+  height: 80px;
+  margin-top: 40px;
+
+}
+
+#twitFeed{
+  padding-top: 60px;
+
+}
+
+h3{
+  color: white;
+}
+
+#head2Wr{
+  font-family: 'Montserrat', sans-serif;
+  background-color: #428BC0;
+  color: white;
+  height: 120%;
+  margin:10px 10px 40px 10px;
+  border:13px solid #428BC0;
+  border-radius: 3px;
+  font-size: 80%;
+
+}
+
+.formDiv{
+
+  background-color: black;
+  color: white !important;
+}
+#formDiv{
+
+  background-color: black;
+  color: white;
+}
+
+
+#innerForm{
+  margin-bottom: 35px;
+  background-color: black;
+}
+
+ nav{
+    width: 100%;
+    margin:0;
+    padding: 0px;
+    
+  }
+   .navbar-brand{
+           padding: 0px 25px 0px 25px;
+            border:5px solid white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            margin-left: 15px;
+            font-weight: bold;
+         }
+   .navbar-brand:hover{
+          border-color: #19C2F2;
+         }
+    a:hover{
+      color: white;
+    }
+
+        
+    #nList{
+      padding-left: 20px;
+      font-weight: bold;      
+    }
+  
+ .active{
+    padding: 0px 40px 0px;
+    font-size: 120%; 
+    color: #fff;
+    }
+    
+  
+
+#resTitle{
+  padding: 25px;
+  }
+
+  .fcon{
+    align-content: center;
+  }
+
+  .dst{
+     border:none !important;
+  }
+
+  @media (pointer:fine){
+          .navbar-brand:hover{
+          border-color: #19C2F2;
+          color: #19C2F2 !important;
+     }
+       }
