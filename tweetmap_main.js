@@ -30,16 +30,25 @@ var geocoder;
 var emap;
 // location results map
 var map;
+// info window with address
+var locInfoWindow;
+//infowindow with coordinates
+var geoInfoWindow;
+var findAddressInfoWindow;
+// error info winow
+var eInfoWindow; 
 //Map marker to drag
 var marker;
 var mapDiv;
 var resAddress;
 //lat long for geocode
 var latlng = {lat: 10, lng: 10};
-// lat long for marker
+// lat long for init and error
 var myLatLng = {lat: 10, lng: 10};
 
-
+function close_info_window(iw) {
+	  iw.close()
+	  } 
 
 function cts_tag_click(){
         document.getElementById('resTitle').scrollIntoView(); 
@@ -53,8 +62,12 @@ function load_tweets_html(get_tweet_html, resAddress, findLocationSuccessData, s
             console.log("load tweets html with loc lookup date ~ ", findLocationSuccessData)
                     $("#successDiv").html('');
                     $("#twitterFeed").html('<div class="tc_out">'+get_tweet_html+'</div>');
-                    
-                    var resTitleString = " Tweets within "+$("#radSel").val()+" miles of "+resAddress
+                   
+	            var rad_sel_val_san = $("#radSel").val();
+        		if (rad_sel_val_san == "%2e5"){
+                		rad_sel_val_san = ".5"
+       			 }
+                    var resTitleString = " Tweets within "+rad_sel_val_san+" miles of "+resAddress
 
                     if($("#textSearch").val() != "" && $("#textSearch").val() != undefined  ){
                       resTitleString += " associated with the keywords: "+$("#textSearch").val();
@@ -92,7 +105,7 @@ function load_no_tweets_html(resAddress, findLocationSuccessData){
 }
 
 
-function geocodeLatLng(geocoder, map, infowindow, marker) {
+function geocodeLatLng(geocoder, map,  marker) {
 
 latlng = marker.getPosition();
 geocoder.geocode({'location': latlng}, function(results, status) {
@@ -102,9 +115,11 @@ if (status === 'OK') {
       console.log(results);
       resAddress = results[0].formatted_address;  
 
-   var infoWindow = new google.maps.InfoWindow({map:map});
-   infoWindow.setContent('<p class="winfo">The Address found for your coordinates is '+resAddress+'. <div class="winfo" onclick=cts_tag_click()>Click Here</div><br> Or scroll down to see the local Twitter feed</p>');
-      infoWindow.open(map, marker);
+if (locInfoWindow == null){
+   locInfoWindow = new google.maps.InfoWindow({map:map});
+    }
+locInfoWindow.setContent('<p class="winfo">The address found for your coordinates is '+resAddress+'. <div class="winfo"> Click <button type="submit" class="btn btn-info" onclick=cts_tag_click()> View Feed</button><br> Or scroll down to see the local Twitter feed</div></p><div><button type="submit" class="btn btn-secondary" onclick="close_info_window(locInfoWindow)">Close</button></div>');
+      locInfoWindow.open(map, marker);
       map.setCenter(latlng); 
 
       $.ajax({
@@ -132,13 +147,13 @@ if (status === 'OK') {
 
     } 
     else {
-       infoWindow.setContent('<p class="winfo">No results found. Try another location</p>');
-       infoWindow.open(map, marker);
+       locInfoWindow.setContent('<p class="winfo">No results found. Try another location</p>');
+       locInfoWindow.open(map, marker);
        map.setCenter(latlng);      
     }
   } else {
-       infoWindow.setContent('<p class="winfo">No results found. A server might be down. Please try again later</p>');
-       infoWindow.open(map, marker);
+       locInfoWindow.setContent('<p class="winfo">No results found. A server might be down. Please try again later</p>');
+       locInfoWindow.open(map, marker);
        map.setCenter(latlng);     
        
   }
@@ -158,8 +173,7 @@ function initMap() {
         styles: darkStyleArray
       });   
 
-    mapDiv = document.getElementById('map');
-    google.maps.event.addListener(mapDiv, "idle", function()
+    google.maps.event.addListener(map, "idle", function()
           {
             google.maps.event.trigger(map, 'resize');
           });
@@ -184,7 +198,12 @@ function initMap() {
             lat: position.coords.latitude,
             lng: position.coords.longitude
           };
-        var posm = {
+	google.maps.event.addListener(map, 'zoom_changed', function() {
+    map.setCenter({lat: pos.lat, lng: pos.lng});
+})
+
+	      
+	 var posm = {
             lat: position.coords.latitude - .03,
             lng: position.coords.longitude-.02,
           };         
@@ -195,31 +214,27 @@ function initMap() {
            title: ''
            });
            google.maps.event.addListener(marker, 'dragend', function(ev)
-     {
-             geocodeLatLng(geocoder, map, infoWindow, marker);
+     {		console.log("Drag end event ~ ", ev)
+	     pos = ev.latLng
+             geocodeLatLng(geocoder, map,  marker);
      });
-      var infowindow = new google.maps.InfoWindow({map:map});
-          infowindow.setPosition(posm);
-          infowindow.setContent('<p class="winfo">Your Location is '+marker.position.lat()+' lattitude and  '+marker.position.lng() +' longitude. Drag the red marker to see tweets from another location </p>');
-                    
-     map.setCenter(pos);
-    
-     geocodeLatLng(geocoder, map, infoWindow, marker);
-      
+      	  geoInfoWindow = new google.maps.InfoWindow({map:map});
+          geoInfoWindow.setPosition(posm);  
+           geoInfoWindow.setContent(' <p class="winfo">Your location is '+marker.position.lat()+'latitude and '+marker.position.lng()+' longitude. Drag the red marker to see tweets from somewhere else</p><div class="winfo">Click <button class="btn btn-info" onclick=cts_tag_click() >View feed</button></div><br><p class="winfo"> Or scroll down to see the local Twitter feed for this lcoation</p><br><div><button type="submit" class="btn btn-secondary" onclick="close_info_window(geoInfoWindow)">Close</button></div>');
 
+     map.setCenter(pos);
+     geocodeLatLng(geocoder, map,  marker);
      
   },     function() {
           console.log("Get current position error function called")
-          var infoWindow = new google.maps.InfoWindow({map:map});
-          handleLocationError(true, infoWindow, map.getCenter());
+          handleLocationError(true,  map.getCenter());
                     }
     );
 }     
 else {
         // Browser doesn't support Geolocation    
         console.log("no navigator geolocation")   
-        var infoWindow = new google.maps.InfoWindow({map:map});
-        handleLocationError(false, infoWindow, map.getCenter());
+        handleLocationError(false,   map.getCenter());
    }
 }
 
@@ -227,15 +242,15 @@ function initMapError() {
         
       // var myLatLng = {lat: 0, lng: 0}; lat 0 lng 0 causes fatal
 
-// init to random location
+// init to random location in london
    myLatLng = {lat: 51.50, lng: -.13};        
         emap = new google.maps.Map(document.getElementById('map'), {
             zoom: 8,
             center: myLatLng,
             styles: darkStyleArray
           });
- mapDiv = document.getElementById('map');                   
-      google.maps.event.addListener(mapDiv, "idle", function()
+      
+	google.maps.event.addListener(emap, "idle", function()
           {
             google.maps.event.trigger(emap, 'resize');
           });
@@ -246,19 +261,12 @@ function initMapError() {
           emap.setCenter(center);
       });
 
-    var einfoWindow = new google.maps.InfoWindow({map:emap});
-          einfoWindow.setPosition(myLatLng);
-          einfoWindow.setContent('<p class="winfo">Your location couldn\'t be found please enable location services to start at your location</p>');
-          
-    var infoWindow = new google.maps.InfoWindow({map:emap});
-          infoWindow.setPosition(myLatLng);
-          infoWindow.setContent('<p class="winfo">Drag the red marker to find Address</p>');
-          emap.setCenter(myLatLng);
    
-    var myLatLngMark = { lat: myLatLng['lat'] - .3,
-                          lng: myLatLng['lng'] - .3
+    var myLatLngMark = { lat: myLatLng['lat'] - .03,
+                          lng: myLatLng['lng'] - .03
       };
 
+	// still init map marker and function in case user turns on location later
     var marker = new google.maps.Marker({
            position: myLatLngMark,
            map: emap,
@@ -267,16 +275,19 @@ function initMapError() {
            });
 
            google.maps.event.addListener(marker, 'dragend', function(ev){
-           geocodeLatLng(geocoder, emap, infoWindow, marker);
+           geocodeLatLng(geocoder, emap, marker);
           });         
 }
-  function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+
+function handleLocationError(browserHasGeolocation) {
         initMapError();
-       // var infoWindow = new google.maps.InfoWindow({map:emap});
-        infoWindow.setPosition(myLatLng);
-        infoWindow.setContent(browserHasGeolocation ?
+       einfowindow = new google.maps.InfoWindow({map:emap});
+        einfowindow.setPosition(myLatLng);
+        einfowindow.setContent('<p class="winfo">Location services error</p><div><button type="submit" class="btn btn-primary" onclick="close_info_window(einfowindow)">Close</button></div>')
+		
+		browserHasGeolocation ?
              alert( 'The Geolocation service failed. Please make sure location services is enabled if you\'d like to start out at your location.') :
-             alert('Your browser doesn\'t seem to support geolocation services.'));
+             alert('Your browser doesn\'t seem to support geolocation services.');
     };
         
 
@@ -319,10 +330,13 @@ function initMapError() {
                   draggable:true,
                   title: ''
                   });
-                var infoWindow = new google.maps.InfoWindow({map:map});
-                infoWindow.setContent('<p class="winfo">The Address found for your coordinates is '+data.results[0].formatted_addresss+'. <div class="winfo" onclick=cts_tag_click() >Click Here</div><br> Or scroll down to see the local Twitter feed</p>');
+             
+
+		 findAddressInfoWindow = new google.maps.InfoWindow({map:map});
+		    findAddressInfoWindow.setPosition(data.results[0].geometry.location)
+		    findAddressInfoWindow.setContent('<p class="winfo">The Address found for your coordinates is '+data.results[0].formatted_address+'</p><div class="winfo">Click <button class="btn btn-info" onclick=cts_tag_click() >View feed</button></div><br><p class="winfo"> Or scroll down to see the local Twitter feed</p><br><div><button type="submit" class="btn btn-secondary" onclick="close_info_window(findAddressInfoWindow)">Close</button></div>');
                 google.maps.event.addListener(marker, 'dragend', function(ev){
-                  geocodeLatLng(geocoder, map, infoWindow, marker);
+                  geocodeLatLng(geocoder, map, marker);
                 });
       
            resAddress = data.results[0].formatted_address
