@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+   
+    <title>TweetMap </title>
+
+ {% load static %}
+      <script src="{% static 'tether_utils.js' %}" ></script> 
+      <script src="{% static 'tether.js' %}" ></script> 
+
+      <script type='text/javascript' src="{% static 'jquery.min.js' %}"></script>
+
+      <link rel="stylesheet" type="text/css" href="{% static 'jquery-ui.css' %}">
+      <script type='text/javascript' src="{% static 'jquery-ui.js' %}"> </script>
+
+      <script src="{% static 'bootstrap.min.js' %}"></script>
+    
+      <link rel="stylesheet" href="{% static 'bootstrap.min.css.map' %}">
+      <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
+      <link rel="stylesheet" href="{% static 'font-awesome.min.css' %}">
+      <link rel = "stylesheet" type="text/css" href="{% static 'ZC.css' %}">
+
+      <script src="{% static 'touchPunch.js' %}"></script>
+
+      <script src="{% static 'js_ext.js' %}"></script>
+       
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+
+  </head>
+<body>
+
+<div class="container-fluid">
+
+ 
+
+<nav class="navbar navbar-toggleable-sm navbar-inverse bg-inverse">
+
+  <button class="navbar-toggler navbar-toggler-right " type="button" data-toggle="collapse" data-target="#navbarSupportedContent" >
+
+    <span class="navbar-toggler-icon"></span>
+
+  </button>
+
+  <a class="navbar-brand" href="/siHome">SI</a>
+
+  
+
+  
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+    <ul class="navbar-nav mr-auto" id="nList">
+
+      <li class="nav-item active">
+
+        <a class="nav-link" href="#">TweetMap</a>
+
+      </li>
+
+      <li class="nav-item">
+
+        <a class="nav-link" href="/">Home</a>
+
+      </li>
+
+       
+
+      </ul>
+
+   </div>
+
+  </nav>
+
+ 
+
+</div>
+
+
+
+
+
+      <div id="head2Wr">
+
+      <h2>Drag the map marker for geographic info and local Twitter feed</h2>
+
+      </div>
+
+
+
+
+
+<div class="container-fluid" id="mapSide">
+
+    <div class="container" id="mapWrap">
+
+      
+
+        <div class="container" id="map">
+
+        </div> 
+
+        <div class="ui-resizable-handle ui-resizable-se" id="segrip">          
+
+        </div>   
+
+    </div>
+
+</div>
+
+
+
+<div class="container-fluid formDiv" >
+
+  <div id="head2Wr">
+
+    <h2>Search for a Local Twitter Feed by Location Name</h2>
+
+  </div>
+
+
+
+  <div class="container-fluid  row justify-content-center" id="innerForm">
+
+    <form id='addForm'>
+
+      <div class="form-group">
+
+        <label for="address">Enter a Location</label>
+
+        <input type="text" class="form-control" id="address" placeholder="58 sig infinite ave" name='parAddress'>
+
+        <small id="addHelp" class="form-text text-muted"></small>
+
+      </div>  
+
+      <button type="submit" class="btn btn-primary" id="findAddress">Submit</button>
+
+    </form>
+
+  </div>
+
+  <div id="successDiv">
+
+  </div>
+
+</div>
+
+
+
+
+
+
+
+<div id="head2Wr">
+
+  <h2>Refined Search for Local Twitter Feed</h2>
+
+</div>
+
+
+
+
+
+<div class="container-fluid formDiv justify-content-center" id="sOpt" >
+
+  
+
+      <button class="btn btn-primary" id="rsTog" type="button" data-toggle="collapse" data-target="#Scol" aria-expanded="false" aria-controls="collapseExample">
+
+        Refine Your Search!
+
+      </button>
+
+      <br><br>
+
+<div class="collapse justify-content-center" id="Scol">
+
+<br>
+
+<h2>Specify your Search terms</h2>
+
+<br>
+
+ <form id="reForm" method="POST">
+
+    <div class="form-group">
+
+     <label for="radSel">Look for tweets within&nbsp&nbsp </label>
+
+      <select class="custom-select-lg" id="radSel">
+
+        <!-- <option value=".5">.5 miles</option> -->
+
+        <option value="1">1 miles</option>
+
+        <option selected value="3">3 miles</option>
+
+         <option value="7">7 miles</option>
+
+          <option value="15">15 miles</option>
+
+           <option value="30">30 miles</option>
+
+            <option value="100">100 miles</option>
+
+            <option value="500">500 miles</option>
+
+            <option value="1000">1000 miles</option>
+
+      </select>
+
+       <label for="radSel">&nbsp&nbsp of the map marker</label>
+
+    </div>
+
+    <div class="form-group">
+
+    <label for="countSel">Choose the maximum number of Tweets to view per request&nbsp&nbsp </label>
+
+        <select class="custom-select-lg" id="countSel">
+
+            <option selected value="1">1 tweet</option>
+
+            <option value="3">3 tweets</option>
+
+            <option value="5">5 tweets</option>
+
+            <!-- <option>25 tweets</option>
+
+            <option>40 tweets</option>
+
+            <option>60 tweets</option>
+
+            <option>100 tweets</option> -->
+
+          </select>
+
+          <br>
+
+    <small>API limits are 300 tweets per 15 minute period</small>
+
+        </div>  
+
+     <div class= "row justify-content-center">
+
+      <label for="textSearch" class="col-form-label">Search with Keyword(s) ?</label>
+
+      <div class="col-4">
+
+        <input class="form-control" type="text" value="" placeholder="e.g. Computer Science" id="textSearch">
+
+        </div>
+
+      </div>   
+
+    <br>
+
+    <button type="submit" class="btn btn-primary" id="refineSubmit">Search Feed</button>
+
+  </form>
+
+ </div>
+
+</div>
+
+
+
+<div class = "container-fluid" id="twitFeed" >
+
+  <h3 id = "resTitle"> </h3>
+
+</div>
+
+
+
+
+
+
+
+  <div id="twitterFeed" class="row justify-content-center"></div>
+
+
+
+  <div class= "row justify-content-center">
+
+    <button type="submit" class="btn btn-primary" id="scrollToTop">Scroll to Top</button>
+
+  </div>  
+
+
+
+
+
+<div id="footer">
+
+</div>
+
+
+
+  
+
+<script src="tweetmap_main.js"></script>  
+
+
+
+</body>
+
+</html>
